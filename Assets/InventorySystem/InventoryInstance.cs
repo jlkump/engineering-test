@@ -14,9 +14,13 @@ public class InventoryInstance : MonoBehaviour
     public delegate void InventoryUpdate();
     public event InventoryUpdate onInventoryUpdate;
 
+    // GUIDs can be hard, just hard-code in editor for now.
+    // If wanted, a system could be made for generating GUIDs based on position, instance variables, or some other consistent manner.
+    public uint inventoryId = uint.MaxValue;
 
     void Start()
     {
+        print("Inventory " + inventoryName + " has id " + inventoryId);
         inventorySlots = new InventoryItemSlot[maxSlots];
         for (int i = 0; i < inventorySlots.Length; i++)
         {
@@ -105,6 +109,50 @@ public class InventoryInstance : MonoBehaviour
         InventoryItemSlot previous = inventorySlots[slotIndex];
         inventorySlots[slotIndex] = slotItem;
         return previous;
+    }
+
+    public uint GetInventoryID()
+    {
+        return inventoryId;
+    }
+
+    public void Save(System.IO.BinaryWriter writer)
+    {
+        writer.Write(inventorySlots.Length);
+        print("[Save] Saving inventory... Inventory Item Length: " + inventorySlots.Length);
+        foreach (InventoryItemSlot slot in inventorySlots)
+        {
+            print("[Save] Saving inventory... Saving slot (item id: " + slot.itemId + ", amount: " + slot.amount + ")");
+            writer.Write(slot.itemId);
+            writer.Write(slot.amount);
+        }
+    }
+
+    public void Load(System.IO.BinaryReader reader)
+    {
+
+        int numSavedItems = reader.ReadInt32();
+        print("[Load] Loading inventory... Inventory Saved Length: " + numSavedItems);
+        for (int i = 0; i < numSavedItems; i++)
+        {
+            uint itemId = reader.ReadUInt32();
+            uint amount = reader.ReadUInt32();
+            print("[Load] Loading inventory... Loading slot (item id: " + itemId + ", amount: " + amount + ")");
+            if (i < inventorySlots.Length)
+            {
+                inventorySlots[i] = new InventoryItemSlot(itemId, amount);
+            } 
+            else
+            {
+                // Change in inventory length based on the save data, drop excess on the ground
+                print("[Load] Loading inventory... Encountered excess items");
+                for (uint j = 0; j < amount; j++)
+                {
+                    ItemInstance inst = itemFactory.CreateItemInstance(itemId);
+                    inst.transform.position = transform.position + transform.up * 4f;
+                }
+            }
+        }
     }
 }
 

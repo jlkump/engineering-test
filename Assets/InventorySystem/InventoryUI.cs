@@ -134,6 +134,20 @@ public class InventoryUI : MonoBehaviour
             }
         }
     }
+
+    public void DropHeldItem()
+    {
+        if (heldItem != null && !heldItem.IsEmpty())
+        {
+            for (int i = 0; i < heldItem.amount; i++)
+            {
+                ItemInstance inst = itemFactory.CreateItemInstance(heldItem.itemId);
+                inst.transform.position = itemDropLocation.position;
+                inst.SetPickupDelay(4f);
+            }
+            heldItem = InventoryItemSlot.MakeEmpty();
+        }
+    }
 }
 
 [System.Serializable]

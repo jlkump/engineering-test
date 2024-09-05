@@ -13,9 +13,4 @@ public class ItemSpawner : MonoBehaviour
         ItemInstance inst = ItemFactory.CreateItemInstance(itemId);
         inst.transform.position = spawnPosition.position;
     }
-
-    public void Start()
-    {
-        SpawnItem();
-    }
 }

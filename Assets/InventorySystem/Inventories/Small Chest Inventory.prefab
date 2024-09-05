@@ -98,6 +98,7 @@ MonoBehaviour:
   maxSlots: 10
   itemFactory: {fileID: 11400000, guid: 51e9b78766c665a4a88fa87fe26cb7de, type: 2}
   inventoryName: Small Chest
+  inventoryId: 10
 --- !u!1 &9018121557866916995
 GameObject:
   m_ObjectHideFlags: 0

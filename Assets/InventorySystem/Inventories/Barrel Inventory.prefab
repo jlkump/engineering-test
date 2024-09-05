@@ -130,6 +130,7 @@ MonoBehaviour:
   maxSlots: 5
   itemFactory: {fileID: 11400000, guid: 51e9b78766c665a4a88fa87fe26cb7de, type: 2}
   inventoryName: Barrel Inventory
+  inventoryId: 30
 --- !u!1001 &7375882204646156235
 PrefabInstance:
   m_ObjectHideFlags: 0

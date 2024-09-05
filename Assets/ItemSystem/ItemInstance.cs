@@ -109,13 +109,21 @@ public class ItemInstance : MonoBehaviour
     }
 
     // For saving the item instance in the world for future games
-    //void Save(DataWriter writer)
-    //{
+    public void Save(System.IO.BinaryWriter writer)
+    {
 
-    //}
+        writer.Write(transform.position.x);
+        writer.Write(transform.position.y);
+        writer.Write(transform.position.z);
+        print("[Save] Saving items... Item Position (" + transform.position.x + ", " + transform.position.y + ", " + transform.position.z + ")");
+    }
 
-    //void Load(DataReader reader)
-    //{
-
-    //}
+    public void Load(System.IO.BinaryReader reader)
+    {
+        float xPos = reader.ReadSingle();
+        float yPos = reader.ReadSingle();
+        float zPos = reader.ReadSingle();
+        print("[Load] Loading items... Item Save Position (" + xPos + ", " + yPos + ", " + zPos + ")");
+        transform.position = new Vector3(xPos, yPos, zPos);
+    }
 }

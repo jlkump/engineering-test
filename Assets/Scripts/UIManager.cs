@@ -1,6 +1,7 @@
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,8 @@ public class UIManager : MonoBehaviour
     GameObject generalHelpDisplay, interactHelpDisplay, playerCamera, inventoryCamera;
     [SerializeField]
     Button exitButton;
+    [SerializeField]
+    TextMeshProUGUI gameInfoText;
     bool displayInteractHelp = false;
 
     public delegate void UIEvent();
@@ -23,6 +26,16 @@ public class UIManager : MonoBehaviour
     {
         SetInventoryUIActive(false);
         exitButton.onClick.AddListener(OnExitClicked);
+        onUIClosed += () => { inventoryUI.DropHeldItem(); };
+        DontDestroyOnLoad(gameObject);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            OnExitClicked();
+        }
     }
 
     void OnExitClicked()
@@ -69,5 +82,19 @@ public class UIManager : MonoBehaviour
         // TODO: Zoom to container with the camera.
         // Prevent movement
 
+    }
+
+    public void SetGameInfoText(string text, Color textColor)
+    {
+        gameInfoText.gameObject.SetActive(true);
+        gameInfoText.text = text;
+        gameInfoText.color = textColor;
+        StartCoroutine(StopShowingGameInfo());
+    }
+
+    IEnumerator StopShowingGameInfo()
+    {
+        yield return new WaitForSeconds(3f);
+        gameInfoText.gameObject.SetActive(false);
     }
 }
