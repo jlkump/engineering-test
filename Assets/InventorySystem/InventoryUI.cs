@@ -54,12 +54,36 @@ public class InventoryUI : MonoBehaviour
 
     void ItemSlotOnclick(ItemUIDisplay itemSlot, InventoryDisplay display)
     {
-        itemSlot.SetItemDisplay(heldItem);
-        InventoryItemSlot previous = display.inventory.SetSlot(itemSlot.slotIndex, heldItem);
-        print("Item slot clicked, swapping (" + heldItem.itemId + ", " + heldItem.amount + ")" + " with (" + previous.itemId + ", " + previous.amount + ")");
-        heldItem = previous;
-        heldItemDisplay.SetItem(heldItem, itemFactory);
-
+        InventoryItemSlot itemClicked = display.inventory.GetSlot(itemSlot.slotIndex);
+        if (!itemClicked.IsEmpty() || !heldItem.IsEmpty())
+        {
+            if (itemClicked.itemId == heldItem.itemId)
+            {
+                // Add all the amount possible up to the stack limit, keep the rest in the heldItem slot.
+                uint maxStacks = itemFactory.GetMaxStacks(heldItem.itemId);
+                if (itemClicked.amount + heldItem.amount <= maxStacks)
+                {
+                    print("Held item amount " + heldItem.amount + " item clicked amonut " + itemClicked.amount);
+                    itemClicked.amount += heldItem.amount;
+                    heldItem = InventoryItemSlot.MakeEmpty();
+                }
+                else
+                {
+                    heldItem.amount -= maxStacks - itemClicked.amount;
+                    itemClicked.amount = maxStacks;
+                    print("Held item amount " + heldItem.amount + " item clicked amonut " + itemClicked.amount);
+                }
+                itemSlot.SetItemDisplay(itemClicked); // Updates display
+            }
+            else
+            {
+                itemSlot.SetItemDisplay(heldItem);
+                InventoryItemSlot previous = display.inventory.SetSlot(itemSlot.slotIndex, heldItem);
+                print("Item slot clicked, swapping (" + heldItem.itemId + ", " + heldItem.amount + ")" + " with (" + previous.itemId + ", " + previous.amount + ")");
+                heldItem = previous;
+            }
+            heldItemDisplay.SetItem(heldItem, itemFactory);
+        }
     }
 
     public void SetDisplayInventory(InventoryInstance inventoryInstance, int displayId)

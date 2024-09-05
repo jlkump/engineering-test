@@ -69,14 +69,11 @@ public class ItemInstance : MonoBehaviour
 
     IEnumerator PickupDelay(float delay)
     {
-        print("Pickup Delay start");
         pickupDelayActive = true;
         yield return new WaitForSeconds(delay);
         pickupDelayActive = false;
-        print("Pickup Delay complete");
         if (lastCollector != null)
         {
-            print("Has a last Collector, state is " + lastCollector + " " + lastCollector.CanCollectItem(itemId) + " " + !beingCollected);
             PickupItem(lastCollector);
         }
     }
