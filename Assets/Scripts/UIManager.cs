@@ -27,7 +27,6 @@ public class UIManager : MonoBehaviour
         SetInventoryUIActive(false);
         exitButton.onClick.AddListener(OnExitClicked);
         onUIClosed += () => { inventoryUI.DropHeldItem(); };
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Update()
@@ -60,6 +59,7 @@ public class UIManager : MonoBehaviour
         playerController.cameraControlActive = !active;
         playerCamera.SetActive(!active);
         inventoryCamera.SetActive(active);
+        exitButton.gameObject.SetActive(active);
     }
 
     public void ShowOwnerInventory(InventoryInstance owner)

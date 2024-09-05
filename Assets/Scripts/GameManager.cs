@@ -19,10 +19,20 @@ public class GameManager : MonoBehaviour
     public KeyCode newGameKey = KeyCode.N, saveGameKey = KeyCode.K, loadGameKey = KeyCode.L;
 
     string savePath;
+
+    static GameManager inst = null;
     void Awake()
     {
         savePath = Path.Combine(Application.persistentDataPath, "saveFile");
-        DontDestroyOnLoad(gameObject);
+        if (inst == null)
+        {
+            inst = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Update()
@@ -48,11 +58,8 @@ public class GameManager : MonoBehaviour
 
     void LoadGame()
     {
-        if (uiManager != null)
-        {
-            uiManager.SetGameInfoText("Loading from save...", Color.green);
-        }
         BeginNewGame();
+
         print("Load Pressed");
         ItemInstance[] items = FindObjectsOfType<ItemInstance>();
         foreach (ItemInstance item in items)
@@ -67,6 +74,10 @@ public class GameManager : MonoBehaviour
     {
         print("Delaying load");
         yield return new WaitForFixedUpdate();
+        if (uiManager != null)
+        {
+            uiManager.SetGameInfoText("Loading from save...", Color.green);
+        }
         using (
            BinaryReader reader = new BinaryReader(File.Open(savePath, FileMode.Open))
         )

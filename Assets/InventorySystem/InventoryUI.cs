@@ -42,7 +42,6 @@ public class InventoryUI : MonoBehaviour
             if (heldItem.amount == 1)
             {
                 heldItem = InventoryItemSlot.MakeEmpty();
-                print("Setting held item to (" + heldItem.itemId + ", " + heldItem.amount + ")");
             } 
             else
             {
@@ -63,7 +62,6 @@ public class InventoryUI : MonoBehaviour
                 uint maxStacks = itemFactory.GetMaxStacks(heldItem.itemId);
                 if (itemClicked.amount + heldItem.amount <= maxStacks)
                 {
-                    print("Held item amount " + heldItem.amount + " item clicked amonut " + itemClicked.amount);
                     itemClicked.amount += heldItem.amount;
                     heldItem = InventoryItemSlot.MakeEmpty();
                 }
@@ -71,7 +69,6 @@ public class InventoryUI : MonoBehaviour
                 {
                     heldItem.amount -= maxStacks - itemClicked.amount;
                     itemClicked.amount = maxStacks;
-                    print("Held item amount " + heldItem.amount + " item clicked amonut " + itemClicked.amount);
                 }
                 itemSlot.SetItemDisplay(itemClicked); // Updates display
             }
@@ -79,7 +76,6 @@ public class InventoryUI : MonoBehaviour
             {
                 itemSlot.SetItemDisplay(heldItem);
                 InventoryItemSlot previous = display.inventory.SetSlot(itemSlot.slotIndex, heldItem);
-                print("Item slot clicked, swapping (" + heldItem.itemId + ", " + heldItem.amount + ")" + " with (" + previous.itemId + ", " + previous.amount + ")");
                 heldItem = previous;
             }
             heldItemDisplay.SetItem(heldItem, itemFactory);

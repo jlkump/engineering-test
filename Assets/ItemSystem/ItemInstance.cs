@@ -37,13 +37,12 @@ public class ItemInstance : MonoBehaviour
     [SerializeField]
     Transform modelRoot;
 
-    bool beingCollected, pickupDelayActive = false;
+    bool beingCollected = false, pickupDelayActive = false;
 
     ItemCollector lastCollector;
 
     void Start()
     {
-        beingCollected = false;
         modelRoot.DORotate(new Vector3(0, 360, 0), 4, RotateMode.FastBeyond360).SetLoops(-1, LoopType.Restart).SetEase(Ease.Linear);
         modelRoot.DOLocalMoveY(0.2f, 5).SetLoops(-1, LoopType.Yoyo);
     }
@@ -90,6 +89,7 @@ public class ItemInstance : MonoBehaviour
             transform.DOMove(collector.GetCollectPosition(), 10).SetEase(Ease.InCubic).SetSpeedBased(true).OnComplete(
                 () =>
                 {
+                    beingCollected = false;
                     if (collector.AttemptCollect(itemId))
                     {
                         transform.DOScale(0, 0.25f).SetEase(Ease.InBounce).OnComplete(
@@ -98,10 +98,6 @@ public class ItemInstance : MonoBehaviour
                                 Destroy(gameObject);
                             }
                         );
-                    }
-                    else
-                    {
-                        beingCollected = false;
                     }
                 }
             );

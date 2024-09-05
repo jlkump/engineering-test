@@ -20,7 +20,6 @@ public class InventoryInstance : MonoBehaviour
 
     void Start()
     {
-        print("Inventory " + inventoryName + " has id " + inventoryId);
         inventorySlots = new InventoryItemSlot[maxSlots];
         for (int i = 0; i < inventorySlots.Length; i++)
         {
@@ -33,7 +32,6 @@ public class InventoryInstance : MonoBehaviour
     {
         for (int i = 0; i < inventorySlots.Length; i++)
         {
-            print("Checking slot " + i + " has item " + inventorySlots[i].itemId + " with amount " + inventorySlots[i].amount);
             // Check if empty slot is available
             if (inventorySlots[i].amount == 0)
             {
