@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using Unity.VisualScripting;
-using static UnityEditor.Progress;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,7 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     UIManager uiManager;
 
-    public KeyCode newGameKey = KeyCode.N, saveGameKey = KeyCode.K, loadGameKey = KeyCode.L;
+    public KeyCode newGameKey = KeyCode.N, saveGameKey = KeyCode.K, loadGameKey = KeyCode.L, quitGameKey = KeyCode.Q;
 
     string savePath;
 
@@ -37,17 +36,21 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(newGameKey))
+        if (Input.GetKeyDown(newGameKey))
         {
             BeginNewGame();
         } 
-        else if (Input.GetKey(saveGameKey))
+        else if (Input.GetKeyDown(saveGameKey))
         {
             SaveGame();
         }
-        else if (Input.GetKey(loadGameKey))
+        else if (Input.GetKeyDown(loadGameKey))
         {
             LoadGame();
+        }
+        else if (Input.GetKeyDown(quitGameKey))
+        {
+            Application.Quit();
         }
     }
 
