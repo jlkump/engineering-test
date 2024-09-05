@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -16,6 +17,10 @@ public class ItemUIDisplay : MonoBehaviour
 
     [SerializeField]
     ItemFactory itemFactory;
+
+    public Button button;
+    public int slotIndex = -1;
+
 
     public void SetItemDisplay(InventoryItemSlot item)
     {
@@ -42,5 +47,10 @@ public class ItemUIDisplay : MonoBehaviour
             nameText.SetText(itemFactory.GetItemName(item.itemId));
             amountText.SetText("x" +  item.amount);
         }
+    }
+
+    void ButtonClicked()
+    {
+        print("Button clicked!");
     }
 }

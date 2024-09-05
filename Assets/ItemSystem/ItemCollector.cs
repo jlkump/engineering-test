@@ -25,4 +25,13 @@ public class ItemCollector : MonoBehaviour
     {
         return inventory.AddItem(itemId);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        ItemInstance item = other.GetComponent<ItemInstance>();
+        if (item != null)
+        {
+            item.PickupItem(this);
+        }
+    }
 }

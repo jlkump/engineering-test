@@ -7,13 +7,6 @@ public class ItemFactory : ScriptableObject {
     [SerializeField]
     ItemInstance[] itemPrefabs;
 
-    List<ItemInstance> instances;
-
-    public void Start()
-    {
-        instances = new List<ItemInstance>();
-    }
-
     public string GetItemName(uint itemId)
     {
         if (itemId < itemPrefabs.Length)
@@ -53,7 +46,6 @@ public class ItemFactory : ScriptableObject {
     {
         ItemInstance inst = Instantiate(itemPrefabs[itemId]);
         inst.itemId = itemId;
-        instances.Add(inst);
         return inst;
     }
 }

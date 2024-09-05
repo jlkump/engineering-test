@@ -243,7 +243,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6601173618557899212}
+        m_TargetAssemblyTypeName: UnityEngine.Object, UnityEngine
+        m_MethodName: set_name
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ButtonClicked
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &6601173618557899212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,6 +274,7 @@ MonoBehaviour:
   defaultDisplaySprite: {fileID: 21300000, guid: f569106c8cdd93d4ea36c675e3045858,
     type: 3}
   itemFactory: {fileID: 11400000, guid: 51e9b78766c665a4a88fa87fe26cb7de, type: 2}
+  button: {fileID: 2990648124247542534}
 --- !u!1 &6064123403932469027
 GameObject:
   m_ObjectHideFlags: 0

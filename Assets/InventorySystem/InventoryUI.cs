@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -8,47 +10,114 @@ public class InventoryUI : MonoBehaviour
     ItemUIDisplay itemDisplayPrefab;
 
     [SerializeField]
-    GameObject leftDisplay, leftDisplayContainer, rightDisplay, rightDisplayContainer;
+    InventoryDisplay[] displays;
 
-    InventoryItemSlot heldItem = null;
+    [SerializeField]
+    UIHeldItem heldItemDisplay;
 
-    public void SetLeftDisplay(InventoryInstance inventoryInstance)
+    [SerializeField]
+    ItemFactory itemFactory;
+
+    [SerializeField]
+    Button dropHeldItemButton;
+
+    [SerializeField]
+    Transform itemDropLocation;
+
+    InventoryItemSlot heldItem;
+
+    private void Start()
     {
-        foreach (Transform child in leftDisplayContainer.transform)
+        heldItem = InventoryItemSlot.MakeEmpty();
+        dropHeldItemButton.onClick.AddListener(OnDropItemClicked);
+    }
+
+    void OnDropItemClicked()
+    {
+        if (heldItem.amount != 0)
+        {
+            ItemInstance inst = itemFactory.CreateItemInstance(heldItem.itemId);
+            inst.transform.position = itemDropLocation.position;
+            inst.SetPickupDelay(4f);
+            if (heldItem.amount == 1)
+            {
+                heldItem = InventoryItemSlot.MakeEmpty();
+                print("Setting held item to (" + heldItem.itemId + ", " + heldItem.amount + ")");
+            } 
+            else
+            {
+                heldItem.amount--;
+            }
+            heldItemDisplay.SetItem(heldItem, itemFactory);
+        }
+    }
+
+    void ItemSlotOnclick(ItemUIDisplay itemSlot, InventoryDisplay display)
+    {
+        itemSlot.SetItemDisplay(heldItem);
+        InventoryItemSlot previous = display.inventory.SetSlot(itemSlot.slotIndex, heldItem);
+        print("Item slot clicked, swapping (" + heldItem.itemId + ", " + heldItem.amount + ")" + " with (" + previous.itemId + ", " + previous.amount + ")");
+        heldItem = previous;
+        heldItemDisplay.SetItem(heldItem, itemFactory);
+
+    }
+
+    public void SetDisplayInventory(InventoryInstance inventoryInstance, int displayId)
+    {
+        displays[displayId].inventory = inventoryInstance;
+        displays[displayId].titleText.SetText(inventoryInstance.inventoryName);
+        foreach (Transform child in displays[displayId].gridDisplayContainer.transform)
         {
             Destroy(child.gameObject);
         }
-        foreach (var slot in inventoryInstance.GetSlots())
+        InventoryItemSlot[] slots = inventoryInstance.GetSlots();
+        for (int i = 0; i < slots.Length; i++)
         {
-
+            InventoryItemSlot slot = slots[i];
             ItemUIDisplay slotDisplay = Instantiate(itemDisplayPrefab);
             slotDisplay.SetItemDisplay(slot);
-            slotDisplay.transform.parent = leftDisplayContainer.transform;
+            slotDisplay.transform.parent = displays[displayId].gridDisplayContainer.transform;
+            slotDisplay.slotIndex = i;
+            slotDisplay.button.onClick.AddListener(() =>
+            {
+                ItemSlotOnclick(slotDisplay, displays[displayId]);
+            });
         }
     }
 
-    public void SetRightDisplay(InventoryInstance inventoryInstance)
+    public void SetDisplayActive(bool active, int displayId)
     {
-        foreach (Transform child in rightDisplayContainer.transform)
+        displays[displayId].rootDisplay.SetActive(active);
+    }
+
+    public void SetWatchInventory(InventoryInstance inventoryInstance)
+    {
+        inventoryInstance.onInventoryUpdate += UpdateInventoryDisplay;
+    }
+
+    void UpdateInventoryDisplay()
+    {
+        for (int i = 0; i < displays.Length; i++)
         {
-            Destroy(child.gameObject);
+            Transform parent = displays[i].gridDisplayContainer.transform;
+            for (int j = 0; j < parent.childCount; j++)
+            {
+                ItemUIDisplay itemDisplay = parent.GetChild(j).GetComponent<ItemUIDisplay>();
+                if (itemDisplay != null)
+                {
+                    itemDisplay.SetItemDisplay(displays[i].inventory.GetSlot(i));
+                }
+            }
         }
-        foreach (var slot in inventoryInstance.GetSlots())
-        {
-
-            ItemUIDisplay slotDisplay = Instantiate(itemDisplayPrefab);
-            slotDisplay.SetItemDisplay(slot);
-            slotDisplay.transform.parent = rightDisplayContainer.transform;
-        }
     }
+}
 
-    public void SetLeftDisplayActive(bool active)
-    {
-        leftDisplay.SetActive(active);
-    }
+[System.Serializable]
+public class InventoryDisplay
+{
+    public GameObject rootDisplay, gridDisplayContainer;
+    public TextMeshProUGUI titleText;
 
-    public void SetRightDisplayActive(bool active)
-    {
-        rightDisplay.SetActive(active);
-    }
+    [HideInInspector]
+    public InventoryInstance inventory;
 }

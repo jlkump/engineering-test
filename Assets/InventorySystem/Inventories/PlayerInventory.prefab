@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3676076245847558851}
   - component: {fileID: 8187219073109249467}
   - component: {fileID: 1527701319691601142}
+  - component: {fileID: 8728377776144826629}
   m_Layer: 8
   m_Name: PlayerInventory
   m_TagString: Untagged
@@ -46,8 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSlots: 5
-  inventorySlots: []
   itemFactory: {fileID: 11400000, guid: 51e9b78766c665a4a88fa87fe26cb7de, type: 2}
+  inventoryName: 
 --- !u!114 &1527701319691601142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,7 +61,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e238371ed56978b4bb9c544b0f499ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryUI: {fileID: 0}
+  ui: {fileID: 0}
   ownerInventory: {fileID: 8187219073109249467}
   ownerInventoryKey: 9
   interactInventoryKey: 101
+--- !u!135 &8728377776144826629
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8452840882969868382}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 1.17, z: 0.72}

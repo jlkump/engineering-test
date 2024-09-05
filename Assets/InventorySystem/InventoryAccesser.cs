@@ -16,6 +16,13 @@ public class InventoryAccesser : MonoBehaviour
     void Start()
     {
         interactableInventories = new List<InventoryInstance>();
+        ui.onUIClosed += OnUIClosed;
+    }
+
+    void OnUIClosed()
+    {
+        ownerInventoryOpen = false;
+        interactInventoryOpen = false;
     }
 
 
@@ -39,7 +46,7 @@ public class InventoryAccesser : MonoBehaviour
         {
             interactableInventories.Remove(instance);
         }
-        if (interactableInventories.Count > 0)
+        if (interactableInventories.Count <= 0)
         {
             ui.DisplayInteractHelp(false);
         }
@@ -69,7 +76,6 @@ public class InventoryAccesser : MonoBehaviour
                 ToggleInteractInventoryView();
             }
         }
-        print("Owner inventory open " + ownerInventoryOpen + "\nInteract inventory open " + interactInventoryOpen);
     }
 
     void ToggleOwnerInventoryView()

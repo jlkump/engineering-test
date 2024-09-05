@@ -37,7 +37,9 @@ public class ItemInstance : MonoBehaviour
     [SerializeField]
     Transform modelRoot;
 
-    bool beingCollected;
+    bool beingCollected, pickupDelayActive = false;
+
+    ItemCollector lastCollector;
 
     void Start()
     {
@@ -49,7 +51,43 @@ public class ItemInstance : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         ItemCollector collector = other.gameObject.GetComponent<ItemCollector>();
-        if (collector != null && collector.CanCollectItem(itemId) && !beingCollected)
+        if (pickupDelayActive)
+        {
+            PickupItem(collector);
+        }
+        else
+        {
+            lastCollector = collector;
+        }
+
+    }
+
+    public void SetPickupDelay(float delay)
+    {
+        StartCoroutine(PickupDelay(delay));
+    }
+
+    IEnumerator PickupDelay(float delay)
+    {
+        print("Pickup Delay start");
+        pickupDelayActive = true;
+        yield return new WaitForSeconds(delay);
+        pickupDelayActive = false;
+        print("Pickup Delay complete");
+        if (lastCollector != null)
+        {
+            print("Has a last Collector, state is " + lastCollector + " " + lastCollector.CanCollectItem(itemId) + " " + !beingCollected);
+            PickupItem(lastCollector);
+        }
+    }
+
+    public void PickupItem(ItemCollector collector)
+    {
+        if (pickupDelayActive)
+        {
+            lastCollector = collector;
+        }
+        else if (collector != null && collector.CanCollectItem(itemId) && !beingCollected)
         {
             beingCollected = true;
             transform.DOMove(collector.GetCollectPosition(), 10).SetEase(Ease.InCubic).SetSpeedBased(true).OnComplete(

@@ -1,14 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class InventoryInstance : MonoBehaviour
 {
     public uint maxSlots;
-    [SerializeField]
     InventoryItemSlot[] inventorySlots;
     [SerializeField]
     ItemFactory itemFactory;
+    public string inventoryName;
+
+    public delegate void InventoryUpdate();
+    public event InventoryUpdate onInventoryUpdate;
 
 
     void Start()
@@ -16,14 +20,9 @@ public class InventoryInstance : MonoBehaviour
         inventorySlots = new InventoryItemSlot[maxSlots];
         for (int i = 0; i < inventorySlots.Length; i++)
         {
-            inventorySlots[i] = new InventoryItemSlot(0, 0);
+            inventorySlots[i] = new InventoryItemSlot(uint.MaxValue, 0);
             inventorySlots[i].amount = 0;
         }
-    }
-
-    void Update()
-    {
-        
     }
 
     public bool HasSpaceForItem(uint itemId, uint amount = 1)
@@ -46,22 +45,25 @@ public class InventoryInstance : MonoBehaviour
 
     public bool AddItem(uint itemId, uint amount = 1)
     {
-        // Put with the first matching slot. Otherwise, put in the first empty slot
+        // Put with the first matching slot
         for (int i = 0; i < inventorySlots.Length; i++)
         {
             if (inventorySlots[i].itemId == itemId && inventorySlots[i].amount + amount <= itemFactory.GetMaxStacks(itemId))
             {
                 inventorySlots[i].amount += amount;
+                onInventoryUpdate?.Invoke();
                 return true;
             }
         }
 
+        // Otherwise, put in the first empty slot
         for (int i = 0; i <= inventorySlots.Length; i++)
         {
             if (inventorySlots[i].amount == 0)
             {
                 inventorySlots[i].itemId = itemId;
                 inventorySlots[i].amount = amount;
+                onInventoryUpdate?.Invoke();
                 return true;
             }
         }
@@ -87,9 +89,9 @@ public class InventoryInstance : MonoBehaviour
         }
     }
 
-    public InventoryItemSlot GetSlot(uint slot)
+    public InventoryItemSlot GetSlot(int slotIndex)
     {
-        return inventorySlots[slot];
+        return inventorySlots[slotIndex];
     }
 
     public InventoryItemSlot[] GetSlots()
@@ -97,10 +99,10 @@ public class InventoryInstance : MonoBehaviour
         return inventorySlots;
     }
 
-    public InventoryItemSlot SetSlot(uint slot, InventoryItemSlot slotItem)
+    public InventoryItemSlot SetSlot(int slotIndex, InventoryItemSlot slotItem)
     {
-        InventoryItemSlot previous = inventorySlots[slot];
-        inventorySlots[slot] = slotItem;
+        InventoryItemSlot previous = inventorySlots[slotIndex];
+        inventorySlots[slotIndex] = slotItem;
         return previous;
     }
 }
@@ -116,4 +118,15 @@ public class InventoryItemSlot
         this.itemId = itemId;
         this.amount = amount;
     }
+
+    public bool IsEmpty()
+    {
+        return amount == 0;
+    }
+
+    public static InventoryItemSlot MakeEmpty()
+    {
+        return new InventoryItemSlot(uint.MaxValue, 0);
+    }
+
 }
